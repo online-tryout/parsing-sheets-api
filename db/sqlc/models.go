@@ -19,7 +19,7 @@ type Answers struct {
 	CreatedAt        time.Time `json:"createdAt"`
 }
 
-type Moduleinstances struct {
+type ModuleInstances struct {
 	ID               uuid.UUID `json:"id"`
 	ModuleId         uuid.UUID `json:"moduleId"`
 	TryoutInstanceId uuid.UUID `json:"tryoutInstanceId"`
@@ -71,7 +71,7 @@ type Transactions struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 
-type Tryoutinstances struct {
+type TryoutInstances struct {
 	ID        uuid.UUID `json:"id"`
 	UserId    uuid.UUID `json:"userId"`
 	TryoutId  uuid.UUID `json:"tryoutId"`
