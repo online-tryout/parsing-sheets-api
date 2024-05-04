@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS answers;
 DROP TABLE IF EXISTS transactions;
-DROP TABLE IF EXISTS moduleInstances;
-DROP TABLE IF EXISTS tryoutInstances;
+DROP TABLE IF EXISTS "moduleInstances";
+DROP TABLE IF EXISTS "tryoutInstances";
 DROP TABLE IF EXISTS options;
 DROP TABLE IF EXISTS questions;
 DROP TABLE IF EXISTS modules;

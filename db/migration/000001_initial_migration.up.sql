@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS answers (
   PRIMARY KEY ("optionId", "questionId", "moduleInstanceId")
 );
 
-CREATE TABLE IF NOT EXISTS moduleInstances (
+CREATE TABLE IF NOT EXISTS "moduleInstances" (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   "moduleId" UUID NOT NULL,
   "tryoutInstanceId" UUID NOT NULL,
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS moduleInstances (
   "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS tryoutInstances (
+CREATE TABLE IF NOT EXISTS "tryoutInstances" (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   "userId" UUID NOT NULL,
   "tryoutId" UUID NOT NULL,
@@ -99,9 +99,9 @@ ALTER TABLE options ADD CONSTRAINT fk_options_questions FOREIGN KEY ("questionId
 ALTER TABLE transactions ADD CONSTRAINT fk_transactions_users FOREIGN KEY ("userId") REFERENCES users(uid);
 ALTER TABLE answers ADD CONSTRAINT fk_answers_questions FOREIGN KEY ("questionId") REFERENCES questions(id);
 ALTER TABLE answers ADD CONSTRAINT fk_answers_options FOREIGN KEY ("optionId") REFERENCES options(id);
-ALTER TABLE answers ADD CONSTRAINT fk_answers_moduleInstances FOREIGN KEY ("moduleInstanceId") REFERENCES moduleInstances(id);
+ALTER TABLE answers ADD CONSTRAINT fk_answers_moduleInstances FOREIGN KEY ("moduleInstanceId") REFERENCES "moduleInstances"(id);
 ALTER TABLE transactions ADD CONSTRAINT fk_transactions_tryouts FOREIGN KEY ("tryoutId") REFERENCES tryouts(id);
-ALTER TABLE moduleInstances ADD CONSTRAINT fk_moduleInstances_modules FOREIGN KEY ("moduleId") REFERENCES modules(id);
-ALTER TABLE moduleInstances ADD CONSTRAINT fk_moduleInstances_tryoutInstances FOREIGN KEY ("tryoutInstanceId") REFERENCES tryoutInstances(id);
-ALTER TABLE tryoutInstances ADD CONSTRAINT fk_tryoutInstances_tryouts FOREIGN KEY ("tryoutId") REFERENCES tryouts(id);
-ALTER TABLE tryoutInstances ADD CONSTRAINT fk_tryoutInstances_users_fk FOREIGN KEY ("userId") REFERENCES users(uid);
+ALTER TABLE "moduleInstances" ADD CONSTRAINT fk_moduleInstances_modules FOREIGN KEY ("moduleId") REFERENCES modules(id);
+ALTER TABLE "moduleInstances" ADD CONSTRAINT fk_moduleInstances_tryoutInstances FOREIGN KEY ("tryoutInstanceId") REFERENCES "tryoutInstances"(id);
+ALTER TABLE "tryoutInstances" ADD CONSTRAINT fk_tryoutInstances_tryouts FOREIGN KEY ("tryoutId") REFERENCES tryouts(id);
+ALTER TABLE "tryoutInstances" ADD CONSTRAINT fk_tryoutInstances_users_fk FOREIGN KEY ("userId") REFERENCES users(uid);
