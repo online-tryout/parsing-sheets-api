@@ -15,6 +15,7 @@ RUN curl -o /app/sheets-key.json -L https://storage.googleapis.com/online-tryout
 RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.0/migrate.linux-amd64.tar.gz | tar xvz && \
     mv migrate /usr/local/bin/migrate
 COPY --from=builder /app/main .
+COPY --from=builder /app/app.env .
 COPY --from=builder /app/Makefile .
 COPY --from=builder /app/db ./db
 
