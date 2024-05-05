@@ -1,13 +1,15 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
-	db "github.com/online-tryout/parsing-sheets-api/db/sqlc"
-	// "github.com/online-tryout/parsing-sheets-api/docs"
 	"github.com/online-tryout/parsing-sheets-api/broker"
+	db "github.com/online-tryout/parsing-sheets-api/db/sqlc"
+	"github.com/online-tryout/parsing-sheets-api/docs"
 	"github.com/online-tryout/parsing-sheets-api/util"
-	// swaggerfiles "github.com/swaggo/files"
-	// ginSwagger "github.com/swaggo/gin-swagger"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Server struct {
@@ -35,8 +37,17 @@ func (server *Server) Start(address string) error {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
-	router.POST("/api/tryout", server.createTryout)
+	// configure swagger docs
+	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Host = server.config.BackendSwaggerHost
+	router.GET("/api/parsing-sheets/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
+	// health check api
+	router.GET("/api/parsing-sheets/health", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{"message": "server is running"})
+	})
+
+	router.POST("/api/parsing-sheets/parse", server.parsingSheets)
 	server.router = router
 }
 

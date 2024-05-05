@@ -1,0 +1,141 @@
+basePath: /
+definitions:
+  api.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  api.ModuleResponse:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      moduleOrder:
+        type: integer
+      questions:
+        items:
+          $ref: '#/definitions/api.QuestionResponse'
+        type: array
+      title:
+        type: string
+      tryoutId:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  api.OptionResponse:
+    properties:
+      content:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      isTrue:
+        type: boolean
+      optionOrder:
+        type: integer
+      questionId:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  api.ParsingSheetsParamRequest:
+    properties:
+      endedAt:
+        type: string
+      price:
+        type: string
+      startedAt:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+    type: object
+  api.ParsingSheetsParamResponse:
+    properties:
+      createdAt:
+        type: string
+      endedAt:
+        type: string
+      id:
+        type: string
+      modules:
+        items:
+          $ref: '#/definitions/api.ModuleResponse'
+        type: array
+      price:
+        type: string
+      startedAt:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  api.QuestionResponse:
+    properties:
+      content:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      moduleId:
+        type: string
+      options:
+        items:
+          $ref: '#/definitions/api.OptionResponse'
+        type: array
+      questionOrder:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: This is a documentation for Online Tryout Apps
+  title: Parsing Sheet API Documentation
+  version: "1.0"
+paths:
+  /api/parsing-sheets/parse:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new tryout by parsing google sheet with the provided
+        parameters
+      parameters:
+      - description: Request body to create a new tryout by parsing google sheets
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/api.ParsingSheetsParamRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/api.ParsingSheetsParamResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new tryout by parsing google sheets
+      tags:
+      - Parser Sheets
+swagger: "2.0"

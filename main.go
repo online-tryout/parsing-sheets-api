@@ -11,6 +11,12 @@ import (
 	"github.com/online-tryout/parsing-sheets-api/util"
 )
 
+// @title Parsing Sheet API Documentation
+// @version 1.0
+// @description This is a documentation for Online Tryout Apps
+
+// @host localhost:8081
+// @BasePath /
 func main() {
     // configuration
 	config, err := util.LoadConfig(".")

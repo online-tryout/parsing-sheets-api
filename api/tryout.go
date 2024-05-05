@@ -17,7 +17,7 @@ const (
 	credentials = "sheets-key.json"
 )
 
-type CreateTryoutParamRequest struct {
+type ParsingSheetsParamRequest struct {
 	Title     string `json:"title"`
 	Price     string `json:"price"`
 	Status    string `json:"status"`
@@ -56,7 +56,7 @@ type ModuleResponse struct {
 	Questions   []QuestionResponse `json:"questions"`
 }
 
-type CreateTryoutParamResponse struct {
+type ParsingSheetsParamResponse struct {
 	ID        uuid.UUID        `json:"id"`
 	Title     string           `json:"title"`
 	Price     string           `json:"price"`
@@ -68,8 +68,20 @@ type CreateTryoutParamResponse struct {
 	Modules   []ModuleResponse `json:"modules"`
 }
 
-func (server *Server) createTryout(ctx *gin.Context) {
-	var req CreateTryoutParamRequest
+// Parsing Sheets
+// @Summary Create a new tryout by parsing google sheets
+// @Description Creates a new tryout by parsing google sheet with the provided parameters
+// @Tags Parser Sheets
+// @Accept json
+// @Produce json
+// @Param requestBody body ParsingSheetsParamRequest true "Request body to create a new tryout by parsing google sheets"
+// @Success 200 {object} ParsingSheetsParamResponse "Success"
+// @Failure 400 {object} ErrorResponse "Bad Request"
+// @Failure 500 {object} ErrorResponse "Internal Server Error"
+// @Security BearerAuth
+// @Router /api/parsing-sheets/parse [post]
+func (server *Server) parsingSheets(ctx *gin.Context) {
+	var req ParsingSheetsParamRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -101,7 +113,7 @@ func (server *Server) createTryout(ctx *gin.Context) {
 		return
 	}
 
-	resp := CreateTryoutParamResponse{
+	resp := ParsingSheetsParamResponse{
 		ID:        tryout.ID,
 		Title:     tryout.Title,
 		Price:     tryout.Price,
