@@ -18,7 +18,7 @@ import (
 // @host localhost:8081
 // @BasePath /
 func main() {
-    // configuration
+	// configuration
 	config, err := util.LoadConfig(".")
 	if err != nil {
 		log.Fatal("can't load config: ", err)
@@ -37,15 +37,38 @@ func main() {
 		log.Fatal("can't connect to rabbitmq: ", err)
 	}
 
+	// Create a channel to signal when the server is ready to shutdown
+	shutdown := make(chan struct{})
+
+	// Start consuming messages in a separate goroutine
+	go func() {
+		err := rabbitmq.ConsumeEvent("parsing-sheets-queue")
+		if err != nil {
+			log.Fatalf("Failed to consume messages: %v", err)
+		}
+	}()
+
 	// server
 	server, err := api.NewServer(&config, store, rabbitmq)
 	if err != nil {
 		log.Fatal("can't create server: ", err)
 	}
 
-	// start server
-	err = server.Start(config.ServerAddress)
-	if err != nil {
-		log.Fatal("can't start server: ", err)
-	}
+	// Start server
+	go func() {
+		err := server.Start(config.ServerAddress)
+		if err != nil {
+			log.Fatal("can't start server: ", err)
+		}
+	}()
+
+	// Wait for a signal to shutdown
+	<-shutdown
+}
+
+// handleMessage is a placeholder function to process received messages
+func handleMessage(body []byte) error {
+	log.Printf("Received message: %s\n", string(body))
+	// Your message processing logic here
+	return nil
 }

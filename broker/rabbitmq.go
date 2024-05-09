@@ -2,6 +2,8 @@ package broker
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/rabbitmq/amqp091-go"
@@ -9,6 +11,16 @@ import (
 
 type RabbitMq struct {
 	Channel *amqp091.Channel
+}
+
+type Message struct {
+	ProcessID string `json:"processId"`
+	EndedAt   string `json:"endedAt"`
+	Price     string `json:"price"`
+	StartedAt string `json:"startedAt"`
+	Status    string `json:"status"`
+	Title     string `json:"title"`
+	URL       string `json:"url"`
 }
 
 func NewRabbitMq(source string) (*RabbitMq, error) {
@@ -28,13 +40,11 @@ func NewRabbitMq(source string) (*RabbitMq, error) {
 }
 
 func (rmq *RabbitMq) PublishEvent(queue string, msg []byte) error {
-	// create channel
 	q, err := rmq.Channel.QueueDeclare(queue, true, false, false, false, nil)
 	if err != nil {
 		return err
 	}
 
-	// create context
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -49,5 +59,41 @@ func (rmq *RabbitMq) PublishEvent(queue string, msg []byte) error {
 		return err
 	}
 
+	return nil
+}
+
+func (rmq *RabbitMq) ConsumeEvent(queue string) error {
+	q, err := rmq.Channel.QueueDeclare(queue, true, false, false, false, nil)
+	if err != nil {
+		return err
+	}
+
+	msgs, err := rmq.Channel.Consume(q.Name, "", false, false, false, false, nil)
+	if err != nil {
+		return err
+	}
+
+	for msg := range msgs {
+		err := handleMessage(msg.Body)
+		if err != nil {
+			msg.Nack(false, true)
+			return err
+		}
+		msg.Ack(false)
+	}
+
+	return nil
+}
+
+func handleMessage(body []byte) error {
+	var msg Message
+
+	err := json.Unmarshal(body, &msg)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Received message:\nProcessID: %s\nEndedAt: %s\nPrice: %s\nStartedAt: %s\nStatus: %s\nTitle: %s\nURL: %s\n",
+		msg.ProcessID, msg.EndedAt, msg.Price, msg.StartedAt, msg.Status, msg.Title, msg.URL)
 	return nil
 }
