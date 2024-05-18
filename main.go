@@ -1,13 +1,11 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 
 	_ "github.com/lib/pq"
 	"github.com/online-tryout/parsing-sheets-api/api"
 	"github.com/online-tryout/parsing-sheets-api/broker"
-	db "github.com/online-tryout/parsing-sheets-api/db/sqlc"
 	"github.com/online-tryout/parsing-sheets-api/util"
 )
 
@@ -24,15 +22,8 @@ func main() {
 		log.Fatal("can't load config: ", err)
 	}
 
-	// postgresql
-	conn, err := sql.Open(config.DBDriver, config.DBSource)
-	if err != nil {
-		log.Fatal("can't connect to database: ", err)
-	}
-	store := db.NewStore(conn)
-
 	// rabbitmq
-	rabbitmq, err := broker.NewRabbitMq(config.RabbitSource)
+	rabbitmq, err := broker.NewRabbitMq(config.RabbitSource, &config)
 	if err != nil {
 		log.Fatal("can't connect to rabbitmq: ", err)
 	}
@@ -49,7 +40,7 @@ func main() {
 	}()
 
 	// server
-	server, err := api.NewServer(&config, store, rabbitmq)
+	server, err := api.NewServer(&config, rabbitmq)
 	if err != nil {
 		log.Fatal("can't create server: ", err)
 	}
@@ -64,11 +55,4 @@ func main() {
 
 	// Wait for a signal to shutdown
 	<-shutdown
-}
-
-// handleMessage is a placeholder function to process received messages
-func handleMessage(body []byte) error {
-	log.Printf("Received message: %s\n", string(body))
-	// Your message processing logic here
-	return nil
 }

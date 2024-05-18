@@ -23,8 +23,8 @@ type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
-func NewServer(config *util.Config, store db.Store, rmq *broker.RabbitMq) (*Server, error) {
-	server := &Server{config: *config, store: store, rabbitmq: *rmq}
+func NewServer(config *util.Config, rmq *broker.RabbitMq) (*Server, error) {
+	server := &Server{config: *config, rabbitmq: *rmq}
 	server.setupRouter()
 
 	return server, nil

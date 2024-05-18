@@ -5,11 +5,10 @@ import (
 )
 
 type Config struct {
-	DBDriver            string        `mapstructure:"DB_DRIVER"`
-	DBSource            string        `mapstructure:"DB_SOURCE"`
-	ServerAddress       string        `mapstructure:"BACKEND_SERVER_ADDRESS"`
-	RabbitSource        string        `mapstructure:"RABBIT_SOURCE"`
-	BackendSwaggerHost  string        `mapstructure:"BACKEND_SWAGGER_HOST"`
+	ServerAddress      string `mapstructure:"BACKEND_SERVER_ADDRESS"`
+	RabbitSource       string `mapstructure:"RABBIT_SOURCE"`
+	ServerUrl          string `mapstructure:"SERVER_URL"`
+	BackendSwaggerHost string `mapstructure:"BACKEND_SWAGGER_HOST"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
