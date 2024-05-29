@@ -11,7 +11,7 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates curl
 WORKDIR /app
 RUN mkdir -p /app
-RUN curl -o /app/sheets-key.json -L https://storage.googleapis.com/online-tryout/sheets-key.json
+RUN curl -o /app/sheets-key.json -L https://storage.googleapis.com/online-tryout-law/sheets-key.json
 RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.0/migrate.linux-amd64.tar.gz | tar xvz && \
     mv migrate /usr/local/bin/migrate
 COPY --from=builder /app/main .
